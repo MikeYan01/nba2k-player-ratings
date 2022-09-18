@@ -22,8 +22,15 @@ async function getPlayersUrlsFromEachTeam(team) {
     let playerUrls = [];
     let teamUrl = getTeamsUrl(team);
 
-    let promise = new Promise(function (resolve, reject) {
-        request(teamUrl, function(error, response, body) {
+    const options = {
+        url: teamUrl,
+        headers: {
+            'User-Agent': 'request'
+        }
+    }
+
+    let promise = new Promise((resolve, reject) => {
+        request(options, (error, response, body) => {
             if (error === null && response.statusCode === 200) {
                 let tbody = cheerio.load(body)('tbody');
                 let table = tbody[0];
@@ -37,10 +44,10 @@ async function getPlayersUrlsFromEachTeam(team) {
                 if (playerUrls.length > 0) {
                     resolve(playerUrls);
                 } else {
-                    reject("Failed to get player detail urls.");
+                    reject("Empty playerUrls length");
                 }
             } else {
-                reject("Failed to get player detail urls.");
+                reject("Failed to get player detail response.");
             }
         });
     });
@@ -52,8 +59,15 @@ async function getPlayersUrlsFromEachTeam(team) {
  * Get each player's attribute details
  */
 async function getPlayerDetail(team, playerUrl) {
-    let promise = new Promise(function (resolve, reject) {
-        request(playerUrl, function(error, response, body) {
+    const options = {
+        url: playerUrl,
+        headers: {
+            'User-Agent': 'request'
+        }
+    }
+
+    let promise = new Promise((resolve, reject) => {
+        request(options, (error, response, body) => {
             if (error === null && response.statusCode === 200) {
                 var p = new player();
 
@@ -170,11 +184,7 @@ async function getPlayerDetail(team, playerUrl) {
 function sortPlayers(a, b) {
     
     // Default option: group by each team, then sort all players by overall attributes from highest to lowest among the team
-    if (a.team === b.team) {
-        return b.overallAttribute - a.overallAttribute;
-    }
-
-    return a.team < b.team;
+    return a.team === b.team ? b.overallAttribute - a.overallAttribute : a.team < b.team;
 
     // Another option is to sort all players by overall attributes from highest to lowest among the whole league
     // return b.overallAttribute - a.overallAttribute;
@@ -187,9 +197,9 @@ function saveData(db) {
     var filePath = './data/roster.json';
     var data = JSON.stringify(db, null, 4);
     
-    fs.writeFile(filePath, data, function(error) {
+    fs.writeFile(filePath, data, error => {
         if (error == null) {
-            console.log("Successfully saved the latest player rosters.");
+            console.log("Successfully saved the latest rosters.");
         } else {
             console.log('Failed to save player roster to disk.', error);
         }
@@ -225,7 +235,6 @@ var __main = async function() {
         }));
     }
 
-    console.log("################ Sort players ... ################");
     players.sort(sortPlayers);
 
     console.log("################ Save to disk ... ################");

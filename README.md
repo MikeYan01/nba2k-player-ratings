@@ -16,4 +16,4 @@ Collect latest player ratings data from [2K Ratings](https://www.2kratings.com).
     npm start
     ```
 
-3. Observe console for status and retrieve `./data/roster.json` when the program completes.
+3. Observe the status in console and retrieve `./data/roster.json` when the program completes.
