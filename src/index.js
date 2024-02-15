@@ -8,7 +8,7 @@ import { player } from "./player.js";
 import { teamNamePrettier } from "./util.js";
 
 /**
- * Each team's URL 
+ * Get each team's URL.
  */
 function getTeamsUrl(team) {
     let baseUrl = BASE_URL;
@@ -16,7 +16,7 @@ function getTeamsUrl(team) {
 }
 
 /**
- * Get all player urls in one team
+ * Get all player urls in one team.
  */
 async function getPlayersUrlsFromEachTeam(team) {
     let playerUrls = [];
@@ -51,7 +51,7 @@ async function getPlayersUrlsFromEachTeam(team) {
 }
 
 /**
- * Get each player's attribute details
+ * Get each player's attribute details.
  */
 async function getPlayerDetail(team, playerUrl) {
     const options = {
@@ -168,22 +168,23 @@ async function getPlayerDetail(team, playerUrl) {
 }
 
 /**
- * Player sorting comparator
+ * Player sorting comparator to group by each team, then sort all players by overall attributes from highest to lowest among the team
  */
-function sortPlayers(a, b) {
-    
-    // Default option: group by each team, then sort all players by overall attributes from highest to lowest among the team
+function sortPlayersWithTeamGroupBy(a, b) {
     return a.team === b.team ? b.overallAttribute - a.overallAttribute : a.team < b.team;
-
-    // Another option is to sort all players by overall attributes from highest to lowest among the whole league
-    // return b.overallAttribute - a.overallAttribute;
 }
 
 /**
- * Sava data to local disk. Every new run generates a new file.
+ * Player sorting comparator to sort all players by overall attributes from highest to lowest among the whole league.
  */
-function saveData(db) {
-    let filePath = './data/roster.json';
+function sortPlayersWithoutTeamGroupBy(a, b) {
+    return b.overallAttribute - a.overallAttribute;
+}
+
+/**
+ * Sava data to local disk.
+ */
+function saveData(db, filePath) {
     let data = JSON.stringify(db, null, 4);
     
     fs.writeFile(filePath, data, error => {
@@ -224,10 +225,12 @@ const main = async function() {
         }));
     }
 
-    players.sort(sortPlayers);
+    let teamResult = [...players].sort(sortPlayersWithTeamGroupBy);
+    let leagueResult = players.sort(sortPlayersWithoutTeamGroupBy);
 
-    console.log("################ Saving to disk ... ################");
-    saveData(players);
+    console.log("################ Saving data to disk ... ################");
+    saveData(teamResult, './data/team.json');
+    saveData(leagueResult, './data/league.json');
 }
 
 main()

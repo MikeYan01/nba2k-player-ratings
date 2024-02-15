@@ -1,4 +1,4 @@
-# NBA2KPlayers
+# NBA2K-Player-Ratings
 
 Collect latest player ratings data from [2K Ratings](https://www.2kratings.com).
 
@@ -7,13 +7,13 @@ Collect latest player ratings data from [2K Ratings](https://www.2kratings.com).
 1. Install [Node.JS](https://nodejs.org), then install dependencies packages
 
     ```
-    npm install
+    yarn install
     ```
 
 2. Run program
 
     ```
-    npm start
+    yarn start
     ```
 
-3. Observe the status in console and retrieve `./data/roster.json` when the program completes.
+3. Retrieve json results in `/data` when the program completes.

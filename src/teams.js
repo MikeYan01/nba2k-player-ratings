@@ -1,5 +1,5 @@
 /**
- * Team names that are used in 2K Ratings urls
+ * Team names that are used in 2K Ratings urls.
  */
 export const CURRENT_TEAMS = [
     "atlanta-hawks",

@@ -1,5 +1,5 @@
 /**
- * All player properties and attributes
+ * All player properties and attributes.
  */
 export var player = function() {
     // general
