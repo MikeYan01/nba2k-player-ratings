@@ -75,7 +75,7 @@ async function getPlayerDetail(team, playerUrl) {
         // team
         p.team = team;
 
-        let attributes = cheerio.load(response.data)('.content .card .card-body .list-no-bullet li span');
+        let attributes = cheerio.load(response.data)('.content .card .card-body .list-no-bullet li .attribute-box');
 
         // outside scoring
         let closeShot = attributes[0].children[0].data.trim();
@@ -94,8 +94,8 @@ async function getPlayerDetail(team, playerUrl) {
         // athleticism
         let speed = attributes[6].children[0].data.trim();
         p.speed = parseInt(speed);
-        let acceleration = attributes[7].children[0].data.trim();
-        p.acceleration = parseInt(acceleration);
+        let agility = attributes[7].children[0].data.trim();
+        p.agility = parseInt(agility);
         let strength = attributes[8].children[0].data.trim();
         p.strength = parseInt(strength);
         let vertical = attributes[9].children[0].data.trim();
@@ -137,7 +137,7 @@ async function getPlayerDetail(team, playerUrl) {
         let passVision = attributes[25].children[0].data.trim();
         p.passVision = parseInt(passVision);
 
-        // defending
+        // defense
         let interiorDefense = attributes[26].children[0].data.trim();
         p.interiorDefense = parseInt(interiorDefense);
         let perimeterDefense = attributes[27].children[0].data.trim();
@@ -146,23 +146,22 @@ async function getPlayerDetail(team, playerUrl) {
         p.steal = parseInt(steal);
         let block = attributes[29].children[0].data.trim();
         p.block = parseInt(block);
-        let lateralQuickness = attributes[30].children[0].data.trim();
-        p.lateralQuickness = parseInt(lateralQuickness);
-        let helpDefenseIQ = attributes[31].children[0].data.trim();
+        let helpDefenseIQ = attributes[30].children[0].data.trim();
         p.helpDefenseIQ = parseInt(helpDefenseIQ);
-        let passPerception = attributes[32].children[0].data.trim();
+        let passPerception = attributes[31].children[0].data.trim();
         p.passPerception = parseInt(passPerception);
-        let defensiveConsistency = attributes[33].children[0].data.trim();
+        let defensiveConsistency = attributes[32].children[0].data.trim();
         p.defensiveConsistency = parseInt(defensiveConsistency);
 
         // rebounding
-        let offensiveRebound = attributes[34].children[0].data.trim();
+        let offensiveRebound = attributes[33].children[0].data.trim();
         p.offensiveRebound = parseInt(offensiveRebound);
-        let defensiveRebound = attributes[35].children[0].data.trim();
+        let defensiveRebound = attributes[34].children[0].data.trim();
         p.defensiveRebound = parseInt(defensiveRebound);
 
         return p;
     } catch (error) {
+        console.log(error)
         throw new Error("Failed to get player details");
     }
 }

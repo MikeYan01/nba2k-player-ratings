@@ -25,19 +25,18 @@ export var player = function() {
     this.drawFoul = 0;
     this.hands = 0;
 
-    // defending
+    // defense
     this.interiorDefense = 0;
     this.perimeterDefense = 0;
     this.steal = 0;
     this.block = 0;
-    this.lateralQuickness = 0;
     this.helpDefenseIQ = 0;
     this.passPerception = 0;
     this.defensiveConsistency = 0;
 
     // athleticism
     this.speed = 0;
-    this.acceleration = 0;
+    this.agility = 0;
     this.strength = 0;
     this.vertical = 0;
     this.stamina = 0;
