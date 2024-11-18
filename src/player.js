@@ -4,9 +4,24 @@
 export var player = function () {
   // general
   this.name = "";
+  this.height = "";
+  this.position = "";
+  this.legendaryBadgeCount = 0;
+  this.purpleBadgeCount = 0;
+  this.goldBadgeCount = 0;
+  this.silverBadgeCount = 0;
+  this.bronzeBadgeCount = 0;
+  this.outsideScoringBadgeCount = 0;
+  this.insideScoringBadgeCount = 0;
+  this.generalOffenseBadgeCount = 0;
+  this.playmakingBadgeCount = 0;
+  this.defensiveBadgeCount = 0;
+  this.reboundingBadgeCount = 0;
+  this.allAroundBadgeCount = 0;
+  
+  this.badgeCount = 0;
   this.team = "";
   this.overallAttribute = 0;
-
   // outside scoring
   this.closeShot = 0;
   this.midRangeShot = 0;
