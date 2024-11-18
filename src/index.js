@@ -6,6 +6,8 @@ import { BASE_URL } from "./url.js";
 import { CURRENT_TEAMS } from "./teams.js";
 import { player } from "./player.js";
 import { teamNamePrettier } from "./util.js";
+import { parse } from "json2csv"
+
 
 /**
  * Get each team's URL.
@@ -92,6 +94,63 @@ async function getPlayerDetail(team, playerUrl) {
     p.shotIQ = parseInt(shotIQ);
     let offensiveConsistency = attributes[5].children[0].data.trim();
     p.offensiveConsistency = parseInt(offensiveConsistency);
+
+    // badges
+    let legendaryBadgeCount = cheerio.load(response.data)('.badge-count')[0].children[0].data
+    p.legendaryBadgeCount = parseInt(legendaryBadgeCount)
+    let purpleBadgeCount = cheerio.load(response.data)('.badge-count')[1].children[0].data
+    p.purpleBadgeCount = parseInt(purpleBadgeCount)
+    let goldBadgeCount = cheerio.load(response.data)('.badge-count')[2].children[0].data
+    p.goldBadgeCount = parseInt(goldBadgeCount)
+    let silverBadgeCount = cheerio.load(response.data)('.badge-count')[3].children[0].data
+    p.silverBadgeCount = parseInt(silverBadgeCount)
+    let bronzeBadgeCount = cheerio.load(response.data)('.badge-count')[4].children[0].data
+    p.bronzeBadgeCount = parseInt(bronzeBadgeCount)
+    let badgeCount = cheerio.load(response.data)('.badge-count')[5].children[0].data
+    p.badgeCount = parseInt(badgeCount)
+
+    const rawOutsideScoringCount = cheerio.load(response.data)('#pills-outscoring-tab').text();
+    let digitMatch = rawOutsideScoringCount.match(/\((\d+)\)/);
+    const outsideScoringCount = digitMatch ? parseInt(digitMatch[1], 10) : null;
+    p.outsideScoringBadgeCount = outsideScoringCount
+
+    const rawInsideScoringCount = cheerio.load(response.data)('#pills-inscoring-tab').text();
+    digitMatch = rawInsideScoringCount.match(/\((\d+)\)/);
+    const insideScoringCount = digitMatch ? parseInt(digitMatch[1], 10) : null;
+    p.insideScoringBadgeCount= insideScoringCount
+
+    const rawPlaymakingCount = cheerio.load(response.data)('#pills-playmaking-tab').text();
+    digitMatch = rawPlaymakingCount.match(/\((\d+)\)/);
+    const playmakingCount = digitMatch ? parseInt(digitMatch[1], 10) : null;
+    p.insideScoringBadgeCount= playmakingCount
+
+    const rawDefenseCount = cheerio.load(response.data)('#pills-defense-tab').text();
+    digitMatch = rawDefenseCount.match(/\((\d+)\)/);
+    const defenseCount = digitMatch ? parseInt(digitMatch[1], 10) : null;
+    p.defensiveBadgeCount = defenseCount
+
+    const rawReboundingCount = cheerio.load(response.data)('#pills-rebounding-tab').text();
+    digitMatch = rawReboundingCount.match(/\((\d+)\)/);
+    const reboundingCount = digitMatch ? parseInt(digitMatch[1], 10) : null;
+    p.reboundingBadgeCount = reboundingCount
+
+    const rawGeneralOffenseCount = cheerio.load(response.data)('#pills-genoffense-tab').text();
+    digitMatch = rawGeneralOffenseCount.match(/\((\d+)\)/);
+    const generalOffenseCount = digitMatch ? parseInt(digitMatch[1], 10) : null;
+    p.generalOffenseBadgeCount = generalOffenseCount
+
+    const rawAllAroundCount = cheerio.load(response.data)('#pills-allaround-tab').text();
+    digitMatch = rawAllAroundCount.match(/\((\d+)\)/);
+    const allAroundCount = digitMatch ? parseInt(digitMatch[1], 10) : null;
+    p.allAroundBadgeCount = allAroundCount
+
+    // height + position
+    let generalStatParent = cheerio.load(response.data)('.header-subtitle')
+    let heightStr = generalStatParent[0].children[6].children[1].children[0].data
+    p.height = heightStr
+    
+    let position = (generalStatParent[0].children[4].children[1].children[0].data)
+    p.position = position
 
     // athleticism
     let speed = attributes[6].children[0].data.trim();
@@ -185,18 +244,21 @@ function sortPlayersWithoutTeamGroupBy(a, b) {
 }
 
 /**
- * Sava data to local disk.
+ * Sava data to local disk. Every new run generates a new file.
  */
-function saveData(db, filePath) {
-  let data = JSON.stringify(db, null, 4);
-
-  fs.writeFile(filePath, data, (error) => {
-    if (error == null) {
-      console.log("Successfully saved the latest rosters.");
-    } else {
-      console.log("Failed to save player roster to disk.", error);
-    }
-  });
+function saveData(db) {
+  const today = new Date();
+  const csvData = parse(db);
+  let filePath = `./data/2kroster_${today.toDateString()}.csv`;
+  // let data = JSON.stringify(db, null, 4);
+  
+  fs.writeFile(filePath, csvData, error => {
+      if (error == null) {
+          console.log("Successfully saved the latest rosters.");
+      } else {
+          console.log('Failed to save player roster to disk.', error);
+      }
+  })
 }
 
 const main = async function () {
@@ -236,8 +298,8 @@ const main = async function () {
   let leagueResult = players.sort(sortPlayersWithoutTeamGroupBy);
 
   console.log("################ Saving data to disk ... ################");
-  saveData(teamResult, "./data/team.json");
-  saveData(leagueResult, "./data/league.json");
+  saveData(teamResult);
+  saveData(leagueResult);
 };
 
 main();
