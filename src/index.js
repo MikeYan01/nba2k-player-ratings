@@ -96,17 +96,18 @@ async function getPlayerDetail(team, playerUrl) {
     p.offensiveConsistency = parseInt(offensiveConsistency);
 
     // badges
-    let legendaryBadgeCount = cheerio.load(response.data)('.badge-count')[0].children[0].data
+    const badgeRawData = cheerio.load(response.data)('.badge-count')
+    let legendaryBadgeCount = badgeRawData[0].children[0].data
     p.legendaryBadgeCount = parseInt(legendaryBadgeCount)
-    let purpleBadgeCount = cheerio.load(response.data)('.badge-count')[1].children[0].data
+    let purpleBadgeCount = badgeRawData[1].children[0].data
     p.purpleBadgeCount = parseInt(purpleBadgeCount)
-    let goldBadgeCount = cheerio.load(response.data)('.badge-count')[2].children[0].data
+    let goldBadgeCount = badgeRawData[2].children[0].data
     p.goldBadgeCount = parseInt(goldBadgeCount)
-    let silverBadgeCount = cheerio.load(response.data)('.badge-count')[3].children[0].data
+    let silverBadgeCount = badgeRawData[3].children[0].data
     p.silverBadgeCount = parseInt(silverBadgeCount)
-    let bronzeBadgeCount = cheerio.load(response.data)('.badge-count')[4].children[0].data
+    let bronzeBadgeCount = badgeRawData[4].children[0].data
     p.bronzeBadgeCount = parseInt(bronzeBadgeCount)
-    let badgeCount = cheerio.load(response.data)('.badge-count')[5].children[0].data
+    let badgeCount = badgeRawData[5].children[0].data
     p.badgeCount = parseInt(badgeCount)
 
     const rawOutsideScoringCount = cheerio.load(response.data)('#pills-outscoring-tab').text();
